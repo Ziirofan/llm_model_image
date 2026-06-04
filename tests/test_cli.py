@@ -72,3 +72,20 @@ def test_generate_color_variation_saves_output(tmp_path):
 
     assert output_path.exists()
     mock_pipe.assert_called_once()
+
+def test_generate_background_variation_saves_output(tmp_path):
+    input_path = tmp_path / "input.jpg"
+    output_path = tmp_path / "output.png"
+    _make_dummy_image(input_path)
+
+    mock_pipe = MagicMock()
+    mock_pipe.return_value.images = [Image.new("RGB", (1024, 1024))]
+    mock_mask = Image.new("L", (512, 512), color=255)
+
+    with patch("pipeline.modes.background.segment_background") as mock_seg:
+        mock_seg.return_value = (Image.new("RGB", (512, 512)), mock_mask)
+        from pipeline.modes.background import generate_background_variation
+        generate_background_variation(mock_pipe, input_path, "in a forest", output_path, resolution=512)
+
+    assert output_path.exists()
+    mock_pipe.assert_called_once()
