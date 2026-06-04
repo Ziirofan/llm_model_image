@@ -45,9 +45,11 @@ def main():
 
     try:
         pipe = load_pipeline(args.mode)
-    except torch.cuda.OutOfMemoryError:
-        print("Error: CUDA out of memory. Try --resolution 768 to reduce VRAM usage.", file=sys.stderr)
-        sys.exit(1)
+    except (torch.cuda.OutOfMemoryError, RuntimeError) as e:
+        if "out of memory" in str(e).lower():
+            print("Error: out of memory. Try --resolution 768 to reduce memory usage.", file=sys.stderr)
+            sys.exit(1)
+        raise
 
     if args.mode == "color":
         from pipeline.modes.color import generate_color_variation

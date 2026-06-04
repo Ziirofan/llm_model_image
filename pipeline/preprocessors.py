@@ -28,7 +28,12 @@ def segment_background(image_path: Path) -> tuple[Image.Image, Image.Image]:
 
     checkpoint = hf_hub_download(SAM_CHECKPOINT_REPO, SAM_CHECKPOINT_FILE)
     sam = sam_model_registry[SAM_MODEL_TYPE](checkpoint=checkpoint)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
+    else:
+        device = "cpu"
     sam.to(device)
 
     image = Image.open(image_path).convert("RGB")
