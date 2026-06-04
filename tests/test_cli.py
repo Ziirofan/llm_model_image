@@ -89,3 +89,21 @@ def test_generate_background_variation_saves_output(tmp_path):
 
     assert output_path.exists()
     mock_pipe.assert_called_once()
+
+def test_generate_pose_variation_saves_output(tmp_path):
+    input_path = tmp_path / "input.jpg"
+    pose_path = tmp_path / "pose.jpg"
+    output_path = tmp_path / "output.png"
+    _make_dummy_image(input_path)
+    _make_dummy_image(pose_path)
+
+    mock_pipe = MagicMock()
+    mock_pipe.return_value.images = [Image.new("RGB", (1024, 1024))]
+
+    with patch("pipeline.modes.pose.extract_pose") as mock_pose:
+        mock_pose.return_value = Image.new("RGB", (512, 512))
+        from pipeline.modes.pose import generate_pose_variation
+        generate_pose_variation(mock_pipe, input_path, pose_path, output_path, resolution=512)
+
+    assert output_path.exists()
+    mock_pipe.assert_called_once()
