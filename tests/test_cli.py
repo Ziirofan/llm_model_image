@@ -1,3 +1,4 @@
+import subprocess, sys
 import pytest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
@@ -107,3 +108,34 @@ def test_generate_pose_variation_saves_output(tmp_path):
 
     assert output_path.exists()
     mock_pipe.assert_called_once()
+
+
+def test_cli_missing_input_raises(tmp_path):
+    result = subprocess.run(
+        [sys.executable, "generate.py", "--input", "nonexistent.jpg", "--mode", "color", "--prompt", "red"],
+        capture_output=True, text=True,
+        cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
+    )
+    assert result.returncode != 0
+    assert "not found" in result.stderr.lower() or "error" in result.stderr.lower()
+
+def test_cli_unsupported_format_raises(tmp_path):
+    bad_file = tmp_path / "image.gif"
+    bad_file.write_bytes(b"GIF89a")
+    result = subprocess.run(
+        [sys.executable, "generate.py", "--input", str(bad_file), "--mode", "color", "--prompt", "red"],
+        capture_output=True, text=True,
+        cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
+    )
+    assert result.returncode != 0
+
+def test_cli_pose_mode_requires_pose_flag(tmp_path):
+    img = tmp_path / "img.jpg"
+    _make_dummy_image(img)
+    result = subprocess.run(
+        [sys.executable, "generate.py", "--input", str(img), "--mode", "pose"],
+        capture_output=True, text=True,
+        cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
+    )
+    assert result.returncode != 0
+    assert "--pose" in result.stderr
