@@ -58,3 +58,17 @@ def test_segment_background_returns_image_and_mask(tmp_path):
         image, mask = segment_background(img_path)
     assert isinstance(image, Image.Image)
     assert isinstance(mask, Image.Image)
+
+def test_generate_color_variation_saves_output(tmp_path):
+    input_path = tmp_path / "input.jpg"
+    output_path = tmp_path / "output.png"
+    _make_dummy_image(input_path)
+
+    mock_pipe = MagicMock()
+    mock_pipe.return_value.images = [Image.new("RGB", (1024, 1024))]
+
+    from pipeline.modes.color import generate_color_variation
+    generate_color_variation(mock_pipe, input_path, "red dress", output_path, resolution=512)
+
+    assert output_path.exists()
+    mock_pipe.assert_called_once()
