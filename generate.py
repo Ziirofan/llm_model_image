@@ -29,6 +29,8 @@ def validate(args):
     if args.mode == "pose" and not args.pose.exists():
         print(f"Error: pose reference image not found: {args.pose}", file=sys.stderr)
         sys.exit(1)
+    if args.mode in ("color", "background") and not args.prompt.strip():
+        print("Warning: --prompt is empty. Color/background modes work best with a descriptive prompt.", file=sys.stderr)
 
 
 def main():

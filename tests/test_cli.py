@@ -112,7 +112,7 @@ def test_generate_pose_variation_saves_output(tmp_path):
 
 def test_cli_missing_input_raises(tmp_path):
     result = subprocess.run(
-        [sys.executable, "generate.py", "--input", "nonexistent.jpg", "--mode", "color", "--prompt", "red"],
+        [sys.executable, str(Path(__file__).parent.parent / "generate.py"), "--input", "nonexistent.jpg", "--mode", "color", "--prompt", "red"],
         capture_output=True, text=True,
         cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
     )
@@ -123,7 +123,7 @@ def test_cli_unsupported_format_raises(tmp_path):
     bad_file = tmp_path / "image.gif"
     bad_file.write_bytes(b"GIF89a")
     result = subprocess.run(
-        [sys.executable, "generate.py", "--input", str(bad_file), "--mode", "color", "--prompt", "red"],
+        [sys.executable, str(Path(__file__).parent.parent / "generate.py"), "--input", str(bad_file), "--mode", "color", "--prompt", "red"],
         capture_output=True, text=True,
         cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
     )
@@ -133,7 +133,7 @@ def test_cli_pose_mode_requires_pose_flag(tmp_path):
     img = tmp_path / "img.jpg"
     _make_dummy_image(img)
     result = subprocess.run(
-        [sys.executable, "generate.py", "--input", str(img), "--mode", "pose"],
+        [sys.executable, str(Path(__file__).parent.parent / "generate.py"), "--input", str(img), "--mode", "pose"],
         capture_output=True, text=True,
         cwd="/Users/matthieuvierasantacruz/Repository/projet_perso/llm_test"
     )
