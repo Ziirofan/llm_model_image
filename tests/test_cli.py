@@ -3,7 +3,6 @@ from unittest.mock import patch, MagicMock
 from pathlib import Path
 from PIL import Image
 import numpy as np
-import tempfile, os
 
 def test_load_pipeline_returns_object_for_each_mode():
     """Loader must return a non-None object for every valid mode."""
