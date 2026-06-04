@@ -6,6 +6,12 @@ IP_ADAPTER_SUBFOLDER = "sdxl_models"
 IP_ADAPTER_WEIGHTS = "ip-adapter_sdxl.bin"
 IP_ADAPTER_SCALE = 0.8
 
+try:
+    import torch as _torch
+    DTYPE = _torch.float16
+except ImportError:
+    DTYPE = None  # resolved at runtime when torch is available
+
 
 def load_pipeline(mode: str):
     """Load the appropriate pipeline for the given mode."""
@@ -24,7 +30,7 @@ def _load_base_pipeline():
     from diffusers import StableDiffusionXLPipeline
 
     pipe = StableDiffusionXLPipeline.from_pretrained(
-        SDXL_MODEL, torch_dtype=torch.float16
+        SDXL_MODEL, torch_dtype=DTYPE
     )
     pipe.enable_model_cpu_offload()
     pipe.load_ip_adapter(IP_ADAPTER_REPO, subfolder=IP_ADAPTER_SUBFOLDER, weight_name=IP_ADAPTER_WEIGHTS)
@@ -36,9 +42,9 @@ def _load_controlnet_pipeline():
     import torch
     from diffusers import StableDiffusionXLControlNetPipeline, ControlNetModel
 
-    controlnet = ControlNetModel.from_pretrained(CONTROLNET_POSE_MODEL, torch_dtype=torch.float16)
+    controlnet = ControlNetModel.from_pretrained(CONTROLNET_POSE_MODEL, torch_dtype=DTYPE)
     pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
-        SDXL_MODEL, controlnet=controlnet, torch_dtype=torch.float16
+        SDXL_MODEL, controlnet=controlnet, torch_dtype=DTYPE
     )
     pipe.enable_model_cpu_offload()
     pipe.load_ip_adapter(IP_ADAPTER_REPO, subfolder=IP_ADAPTER_SUBFOLDER, weight_name=IP_ADAPTER_WEIGHTS)
@@ -51,7 +57,7 @@ def _load_inpaint_pipeline():
     from diffusers import StableDiffusionXLInpaintPipeline
 
     pipe = StableDiffusionXLInpaintPipeline.from_pretrained(
-        SDXL_INPAINT_MODEL, torch_dtype=torch.float16
+        SDXL_INPAINT_MODEL, torch_dtype=DTYPE
     )
     pipe.enable_model_cpu_offload()
     pipe.load_ip_adapter(IP_ADAPTER_REPO, subfolder=IP_ADAPTER_SUBFOLDER, weight_name=IP_ADAPTER_WEIGHTS)
