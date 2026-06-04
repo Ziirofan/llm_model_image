@@ -1,0 +1,8 @@
+torch>=2.0.0
+diffusers>=0.25.0
+transformers>=4.35.0
+accelerate>=0.25.0
+controlnet-aux>=0.0.7
+segment-anything>=1.0
+Pillow>=10.0.0
+huggingface-hub>=0.20.0

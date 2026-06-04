@@ -1,0 +1,6 @@
+outputs/
+.superpowers/
+__pycache__/
+*.pyc
+*.pth
+.env
