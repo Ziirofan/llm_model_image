@@ -3,7 +3,7 @@ SDXL_INPAINT_MODEL = "diffusers/stable-diffusion-xl-1.0-inpainting-0.1"
 CONTROLNET_POSE_MODEL = "thibaud/controlnet-openpose-sdxl-1.0"
 IP_ADAPTER_REPO = "h94/IP-Adapter"
 IP_ADAPTER_SUBFOLDER = "sdxl_models"
-IP_ADAPTER_WEIGHTS = "ip-adapter_sdxl.bin"
+IP_ADAPTER_WEIGHTS = "ip-adapter_sdxl_vit-h.bin"
 IP_ADAPTER_SCALE = 0.8
 
 try:
